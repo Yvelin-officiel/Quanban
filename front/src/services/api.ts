@@ -1,6 +1,24 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+
+// Configure axios to handle errors
+axios.interceptors.response.use(
+  (response) => response,
+  (error: AxiosError) => {
+    if (error.response) {
+      // Server responded with error
+      const errorData = error.response.data as { error?: string; message?: string };
+      throw new Error(errorData.message || errorData.error || 'An error occurred');
+    } else if (error.request) {
+      // Request made but no response
+      throw new Error('Unable to reach the server. Please check your connection.');
+    } else {
+      // Something else happened
+      throw new Error(error.message || 'An unexpected error occurred');
+    }
+  }
+);
 
 export const boardService = {
   async getAll() {

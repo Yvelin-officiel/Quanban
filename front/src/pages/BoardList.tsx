@@ -2,12 +2,14 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { boardService } from '../services/api';
 import { Board } from '../types/kanban';
+import ErrorToast from '../components/ErrorToast';
 
 export default function BoardList() {
   const [boards, setBoards] = useState<Board[]>([]);
   const [loading, setLoading] = useState(true);
   const [showNewBoard, setShowNewBoard] = useState(false);
   const [newBoardData, setNewBoardData] = useState({ title: '', description: '' });
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     loadBoards();
@@ -16,10 +18,12 @@ export default function BoardList() {
   const loadBoards = async () => {
     try {
       setLoading(true);
+      setError(null);
       const data = await boardService.getAll();
       setBoards(data);
     } catch (error) {
-      console.error('Error loading boards:', error);
+      const message = error instanceof Error ? error.message : 'Failed to load boards';
+      setError(message);
     } finally {
       setLoading(false);
     }
@@ -29,12 +33,14 @@ export default function BoardList() {
     if (!newBoardData.title.trim()) return;
 
     try {
+      setError(null);
       await boardService.create(newBoardData);
       setNewBoardData({ title: '', description: '' });
       setShowNewBoard(false);
       loadBoards();
     } catch (error) {
-      console.error('Error creating board:', error);
+      const message = error instanceof Error ? error.message : 'Failed to create board';
+      setError(message);
     }
   };
 
@@ -42,10 +48,12 @@ export default function BoardList() {
     if (!confirm('Are you sure you want to delete this board?')) return;
 
     try {
+      setError(null);
       await boardService.delete(id);
       loadBoards();
     } catch (error) {
-      console.error('Error deleting board:', error);
+      const message = error instanceof Error ? error.message : 'Failed to delete board';
+      setError(message);
     }
   };
 
@@ -54,7 +62,9 @@ export default function BoardList() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
+    <>
+      {error && <ErrorToast message={error} onClose={() => setError(null)} />}
+      <div className="min-h-screen bg-gray-100 p-6">
       <div className="max-w-6xl mx-auto">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold">My Kanban Boards</h1>
@@ -135,5 +145,6 @@ export default function BoardList() {
         )}
       </div>
     </div>
+    </>
   );
 }

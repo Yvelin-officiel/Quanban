@@ -2,11 +2,13 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { boardService, columnService, taskService } from '../services/api';
 import { BoardWithDetails, Column, Task } from '../types/kanban';
+import ErrorToast from '../components/ErrorToast';
 
 export default function KanbanBoard() {
   const { id } = useParams<{ id: string }>();
   const [board, setBoard] = useState<BoardWithDetails | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [newColumnTitle, setNewColumnTitle] = useState('');
   const [newTaskData, setNewTaskData] = useState<{ columnId: number | null; title: string }>({
     columnId: null,
@@ -20,10 +22,12 @@ export default function KanbanBoard() {
   const loadBoard = async () => {
     try {
       setLoading(true);
+      setError(null);
       const data = await boardService.getWithDetails(Number(id));
       setBoard(data);
     } catch (error) {
-      console.error('Error loading board:', error);
+      const message = error instanceof Error ? error.message : 'Failed to load board';
+      setError(message);
     } finally {
       setLoading(false);
     }
@@ -33,6 +37,7 @@ export default function KanbanBoard() {
     if (!newColumnTitle.trim() || !board) return;
 
     try {
+      setError(null);
       const position = board.columns.length;
       await columnService.create({
         board_id: board.id,
@@ -42,7 +47,8 @@ export default function KanbanBoard() {
       setNewColumnTitle('');
       loadBoard();
     } catch (error) {
-      console.error('Error creating column:', error);
+      const message = error instanceof Error ? error.message : 'Failed to create column';
+      setError(message);
     }
   };
 
@@ -50,6 +56,7 @@ export default function KanbanBoard() {
     if (!newTaskData.title.trim()) return;
 
     try {
+      setError(null);
       const column = board?.columns.find(c => c.id === columnId);
       const position = column?.tasks?.length || 0;
 
@@ -62,16 +69,19 @@ export default function KanbanBoard() {
       setNewTaskData({ columnId: null, title: '' });
       loadBoard();
     } catch (error) {
-      console.error('Error creating task:', error);
+      const message = error instanceof Error ? error.message : 'Failed to create task';
+      setError(message);
     }
   };
 
   const handleDeleteTask = async (taskId: number) => {
     try {
+      setError(null);
       await taskService.delete(taskId);
       loadBoard();
     } catch (error) {
-      console.error('Error deleting task:', error);
+      const message = error instanceof Error ? error.message : 'Failed to delete task';
+      setError(message);
     }
   };
 
@@ -79,10 +89,12 @@ export default function KanbanBoard() {
     if (!confirm('Are you sure you want to delete this column and all its tasks?')) return;
 
     try {
+      setError(null);
       await columnService.delete(columnId);
       loadBoard();
     } catch (error) {
-      console.error('Error deleting column:', error);
+      const message = error instanceof Error ? error.message : 'Failed to delete column';
+      setError(message);
     }
   };
 
@@ -104,7 +116,9 @@ export default function KanbanBoard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
+    <>
+      {error && <ErrorToast message={error} onClose={() => setError(null)} />}
+      <div className="min-h-screen bg-gray-100 p-6">
       <div className="mb-6">
         <Link to="/" className="text-blue-600 hover:underline">&larr; Back to Boards</Link>
         <h1 className="text-3xl font-bold mt-2">{board.title}</h1>
@@ -201,5 +215,6 @@ export default function KanbanBoard() {
         </div>
       </div>
     </div>
+    </>
   );
 }
