@@ -1,0 +1,121 @@
+name: Build and Deploy Quanban
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  AZURE_RESOURCE_GROUP: rg-quanban
+  AZURE_REGION: westeurope
+  POSTGRES_SERVER_NAME: quanban-server-${{ github.run_number }}
+  POSTGRES_ADMIN_USER: quanbanadmin
+  DATABASE_NAME: quanban
+
+jobs:
+  # Job 1: Build Backend
+  build-backend:
+    name: Build Backend
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: back/package-lock.json
+
+      - name: Install dependencies
+        working-directory: ./back
+        run: npm ci
+
+      - name: Upload backend artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend
+          path: ./back
+          retention-days: 1
+
+  # Job 2: Build Frontend
+  build-frontend:
+    name: Build Frontend
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: front/package-lock.json
+
+      - name: Install dependencies
+        working-directory: ./front
+        run: npm ci
+
+      - name: Build frontend
+        working-directory: ./front
+        run: npm run build
+
+      - name: Upload frontend artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend
+          path: ./front/dist
+          retention-days: 1
+
+  # Job 3: Deploy Infrastructure
+  deploy-infrastructure:
+    name: Deploy Azure Infrastructure
+    runs-on: ubuntu-latest
+    needs: [build-backend, build-frontend]
+    outputs:
+      postgres-fqdn: ${{ steps.deploy.outputs.postgresServerFqdn }}
+      database-name: ${{ steps.deploy.outputs.postgresDatabaseName }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Create Resource Group
+        run: |
+          az group create \
+            --name ${{ env.AZURE_RESOURCE_GROUP }} \
+            --location ${{ env.AZURE_REGION }}
+
+      - name: Deploy Bicep Infrastructure
+        id: deploy
+        uses: azure/arm-deploy@v2
+        with:
+          resourceGroupName: ${{ env.AZURE_RESOURCE_GROUP }}
+          template: ./bicep/main.bicep
+          parameters: >
+            postgresServerName=${{ env.POSTGRES_SERVER_NAME }}
+            postgresAdminUser=${{ env.POSTGRES_ADMIN_USER }}
+            postgresAdminPassword=${{ secrets.POSTGRES_ADMIN_PASSWORD }}
+            databaseName=${{ env.DATABASE_NAME }}
+            location=${{ env.AZURE_REGION }}
+          deploymentName: quanban-deployment-${{ github.run_number }}
+          scope: ''
+
+      - name: Display deployment outputs
+        run: |
+          echo "PostgreSQL Server FQDN: ${{ steps.deploy.outputs.postgresServerFqdn }}"
+          echo "Database Name: ${{ steps.deploy.outputs.postgresDatabaseName }}"
