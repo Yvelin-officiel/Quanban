@@ -1,19 +1,28 @@
-import app from './app.js';
 import dotenv from 'dotenv';
-import mongoose from 'mongoose';
+import app from './app.js';
+import { connectDB } from './config/database.js';
+import { initDatabase } from './config/init-db.js';
 
 dotenv.config();
 
 const PORT = process.env.PORT || 3000;
-const MONGODB_URI = process.env.MONGODB_URI;
 
-mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => {
-    console.log('✅ Connected to MongoDB');
+const startServer = async () => {
+  try {
+    // Connect to Azure SQL Database
+    await connectDB();
+    
+    // Initialize database tables
+    await initDatabase();
+
+    // Start the server
     app.listen(PORT, () => {
-      console.log(`🚀 Server is running on http://localhost:${PORT}`);
+      console.log(`Server running on port ${PORT}`);
     });
-  })
-  .catch((err) => {
-    console.error('❌ MongoDB connection error:', err);
-  });
+  } catch (error) {
+    console.error('Failed to start server:', error);
+    process.exit(1);
+  }
+};
+
+startServer();
