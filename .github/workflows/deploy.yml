@@ -10,6 +10,10 @@ on:
       - main
   workflow_dispatch:
 
+permissions:
+  id-token: write
+  contents: read
+
 env:
   AZURE_RESOURCE_GROUP: rg-quanban
   AZURE_REGION: westeurope
@@ -92,7 +96,9 @@ jobs:
       - name: Azure Login
         uses: azure/login@v2
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       - name: Create Resource Group
         run: |
@@ -104,6 +110,7 @@ jobs:
         id: deploy
         uses: azure/arm-deploy@v2
         with:
+          scope: resourcegroup
           resourceGroupName: ${{ env.AZURE_RESOURCE_GROUP }}
           template: ./bicep/main.bicep
           parameters: >
@@ -113,7 +120,6 @@ jobs:
             databaseName=${{ env.DATABASE_NAME }}
             location=${{ env.AZURE_REGION }}
           deploymentName: quanban-deployment-${{ github.run_number }}
-          scope: ''
 
       - name: Display deployment outputs
         run: |

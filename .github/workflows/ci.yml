@@ -6,6 +6,10 @@ on:
       - main
       - develop
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   # Validation du Backend
   validate-backend:
@@ -63,7 +67,9 @@ jobs:
       - name: Azure Login
         uses: azure/login@v2
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
         continue-on-error: true
 
       - name: Validate Bicep syntax
@@ -75,6 +81,7 @@ jobs:
         if: success()
         uses: azure/arm-deploy@v2
         with:
+          scope: resourcegroup
           resourceGroupName: rg-quanban-test
           template: ./bicep/main.bicep
           parameters: >
@@ -84,6 +91,5 @@ jobs:
             databaseName=quanban
             location=westeurope
           deploymentMode: Validate
-          scope: ''
         continue-on-error: true
 
