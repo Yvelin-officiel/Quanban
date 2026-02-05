@@ -13,8 +13,8 @@ on:
 env:
   AZURE_RESOURCE_GROUP: rg-quanban
   AZURE_REGION: norwayeast
-  POSTGRES_SERVER_NAME: quanban-server-${{ github.run_number }}
-  POSTGRES_ADMIN_USER: quanbanadmin
+  SQL_SERVER_NAME: quanban-server-${{ github.run_number }}
+  SQL_ADMIN_USER: quanbanadmin
   DATABASE_NAME: quanban
 
 jobs:
@@ -82,8 +82,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build-backend, build-frontend]
     outputs:
-      postgres-fqdn: ${{ steps.deploy.outputs.postgresServerFqdn }}
-      database-name: ${{ steps.deploy.outputs.postgresDatabaseName }}
+      sql-fqdn: ${{ steps.deploy.outputs.sqlServerFqdn }}
+      database-name: ${{ steps.deploy.outputs.sqlDatabaseName }}
 
     steps:
       - name: Checkout code
@@ -108,14 +108,14 @@ jobs:
           resourceGroupName: ${{ env.AZURE_RESOURCE_GROUP }}
           template: ./bicep/main.bicep
           parameters: >
-            postgresServerName=${{ env.POSTGRES_SERVER_NAME }}
-            postgresAdminUser=${{ env.POSTGRES_ADMIN_USER }}
-            postgresAdminPassword=${{ secrets.POSTGRES_ADMIN_PASSWORD }}
+            sqlServerName=${{ env.SQL_SERVER_NAME }}
+            sqlAdminUser=${{ env.SQL_ADMIN_USER }}
+            sqlAdminPassword=${{ secrets.POSTGRES_ADMIN_PASSWORD }}
             databaseName=${{ env.DATABASE_NAME }}
             location=${{ env.AZURE_REGION }}
           deploymentName: quanban-deployment-${{ github.run_number }}
 
       - name: Display deployment outputs
         run: |
-          echo "PostgreSQL Server FQDN: ${{ steps.deploy.outputs.postgresServerFqdn }}"
-          echo "Database Name: ${{ steps.deploy.outputs.postgresDatabaseName }}"
+          echo "SQL Server FQDN: ${{ steps.deploy.outputs.sqlServerFqdn }}"
+          echo "Database Name: ${{ steps.deploy.outputs.sqlDatabaseName }}"
