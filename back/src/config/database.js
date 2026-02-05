@@ -4,10 +4,10 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const config = {
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  server: process.env.DB_SERVER,
-  database: process.env.DB_NAME,
+  user: process.env.DB_USER || 'quanbanadmin',
+  password: process.env.DB_PASSWORD || 'Quanban2026!SecureP@ssw0rd',
+  server: process.env.DB_SERVER || 'quanban-server-b3zx2ffjkgkwo.database.windows.net',
+  database: process.env.DB_NAME || 'quanban-db',
   options: {
     encrypt: true, // Required for Azure SQL
     trustServerCertificate: false
