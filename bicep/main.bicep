@@ -6,6 +6,11 @@ param sqlAdminUser string = 'quanbanadmin'
 param sqlAdminPassword string
 param databaseName string = 'quanban-db'
 
+// Paramètres App Service
+param appServicePlanName string = 'quanban-asp-${uniqueString(resourceGroup().id)}'
+param frontendAppName string = 'quanban-front-${uniqueString(resourceGroup().id)}'
+param appServiceSku string = 'F1'
+
 // Module Azure SQL Database
 module sqlDatabase './sql-db.bicep' = {
   name: 'sqlDatabaseModule'
@@ -18,7 +23,20 @@ module sqlDatabase './sql-db.bicep' = {
   }
 }
 
+// Module App Service pour le frontend
+module frontendAppService './app-service.bicep' = {
+  name: 'frontendAppServiceModule'
+  params: {
+    location: location
+    appServicePlanName: appServicePlanName
+    webAppName: frontendAppName
+    sku: appServiceSku
+  }
+}
+
 // Outputs
 output sqlServerFqdn string = sqlDatabase.outputs.serverFqdn
 output sqlDatabaseName string = sqlDatabase.outputs.databaseName
+output frontendUrl string = frontendAppService.outputs.webAppUrl
+output frontendAppName string = frontendAppService.outputs.webAppName
 

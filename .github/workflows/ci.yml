@@ -71,6 +71,7 @@ jobs:
         run: |
           az bicep build --file ./bicep/main.bicep
           az bicep build --file ./bicep/sql-db.bicep
+          az bicep build --file ./bicep/app-service.bicep
 
       - name: Run What-If Analysis
         if: success()
@@ -82,8 +83,9 @@ jobs:
           parameters: >
             sqlServerName=quanban-test-server
             sqlAdminUser=testadmin
-            sqlAdminPassword=${{ secrets.POSTGRES_ADMIN_PASSWORD }}
+            sqlAdminPassword=${{ secrets.SQL_ADMIN_PASSWORD }}
             databaseName=quanban-db
             location=norwaywest
+            appServiceSku=F1
           deploymentMode: Validate
         continue-on-error: true
