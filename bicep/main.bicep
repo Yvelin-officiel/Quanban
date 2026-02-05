@@ -18,7 +18,20 @@ module sqlDatabase './sql-db.bicep' = {
   }
 }
 
+// Module App Service pour le frontend
+module frontendAppService './app-service.bicep' = {
+  name: 'frontendAppServiceModule'
+  params: {
+    location: location
+    appServicePlanName: appServicePlanName
+    webAppName: frontendAppName
+    sku: appServiceSku
+  }
+}
+
 // Outputs
 output sqlServerFqdn string = sqlDatabase.outputs.serverFqdn
 output sqlDatabaseName string = sqlDatabase.outputs.databaseName
+output frontendUrl string = frontendAppService.outputs.webAppUrl
+output frontendAppName string = frontendAppService.outputs.webAppName
 
