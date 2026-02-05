@@ -77,12 +77,12 @@ _Schéma simplifié :_
 - **Déploiement continu** : Mise en place de GitHub Actions pour automatiser le déploiement sur Azure.
 
 ### Estimation des coûts Azure
-__________________________________________________________________________________________
-| Ressource                | Offre gratuite | Coût estimé (mensuel) |                    |
-|--------------------------|----------------|--------------------------------------------|
-| Azure SQL Database       | 250 Go gratuits (12 mois) ou env. 5€/mois pour S0 | 5–15 €  |
-| Azure App Service (Backend) | Gratuit (F1) ou env. 10€/mois (B1) | 0–10 €              |
-| Azure Static Web Apps    | Gratuit pour usage basique         | 0 €                    |
-| Stockage (logs, backups) | Inclus dans les offres de base     | 0–2 €                  |
-|----------------------------------------------------------------------------------------|
+
+| Ressource                   | Offre gratuite                                      | Coût estimé (mensuel) |
+|-----------------------------|-----------------------------------------------------|-----------------------|
+| **Azure SQL Database**      | 250 Go gratuits (12 mois) ou env. 5 €/mois pour S0  | 5–15 €                |
+| **Azure App Service**       | Gratuit (F1) ou env. 10 €/mois (B1)                 | 0–10 €                |
+| **Azure Static Web Apps**   | Gratuit pour usage basique                          | 0 €                   |
+| **Stockage (logs, backups)**| Inclus dans les offres de base                      | 0–2 €                 |
+
 > **Total estimé** : 5 à 25 €/mois selon la charge et les options choisies (hors offre gratuite).
