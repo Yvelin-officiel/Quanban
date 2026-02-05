@@ -5,16 +5,13 @@
     "location": {
       "value": "norwayeast"
     },
-    "sqlServerName": {
-      "value": "quanban-server-dev"
-    },
     "sqlAdminUser": {
       "value": "quanbanadmin"
     },
     "sqlAdminPassword": {
       "reference": {
         "keyVault": {
-          "id": "/subscriptions/{subscription-id}/resourceGroups/{rg-name}/providers/Microsoft.KeyVault/vaults/{vault-name}"
+          "id": "/subscriptions/4d844a6e-ba22-442b-98d2-83a255f69cbe/resourceGroups/rg-quanban/providers/Microsoft.KeyVault/vaults/kv-quanban"
         },
         "secretName": "sql-admin-password"
       }
