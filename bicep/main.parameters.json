@@ -5,18 +5,18 @@
     "location": {
       "value": "norwayeast"
     },
-    "postgresServerName": {
+    "sqlServerName": {
       "value": "quanban-server-dev"
     },
-    "postgresAdminUser": {
+    "sqlAdminUser": {
       "value": "quanbanadmin"
     },
-    "postgresAdminPassword": {
+    "sqlAdminPassword": {
       "reference": {
         "keyVault": {
           "id": "/subscriptions/{subscription-id}/resourceGroups/{rg-name}/providers/Microsoft.KeyVault/vaults/{vault-name}"
         },
-        "secretName": "postgres-admin-password"
+        "secretName": "sql-admin-password"
       }
     },
     "databaseName": {

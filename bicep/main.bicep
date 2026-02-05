@@ -1,24 +1,24 @@
 // Paramètres principaux
 param location string = 'norwayeast'
-param postgresServerName string = 'quanban-server'
-param postgresAdminUser string = 'quanbanadmin'
+param sqlServerName string = 'quanban-server'
+param sqlAdminUser string = 'quanbanadmin'
 @secure()
-param postgresAdminPassword string
+param sqlAdminPassword string
 param databaseName string = 'quanban'
 
-// Module PostgreSQL
-module postgres './postgres.bicep' = {
-  name: 'postgresModule'
+// Module Azure SQL Database
+module sqlDatabase './sql-db.bicep' = {
+  name: 'sqlDatabaseModule'
   params: {
     location: location
-    sqlServerName: postgresServerName
-    adminUser: postgresAdminUser
-    adminPassword: postgresAdminPassword
+    sqlServerName: sqlServerName
+    adminUser: sqlAdminUser
+    adminPassword: sqlAdminPassword
     databaseName: databaseName
   }
 }
 
 // Outputs
-output postgresServerFqdn string = postgres.outputs.serverFqdn
-output postgresDatabaseName string = postgres.outputs.databaseName
+output sqlServerFqdn string = sqlDatabase.outputs.serverFqdn
+output sqlDatabaseName string = sqlDatabase.outputs.databaseName
 

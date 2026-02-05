@@ -7,18 +7,21 @@ param adminPassword string
 param databaseName string = 'quanban-db'
 
 
-// Serveur PostgreSQL Flexible
+// Serveur Azure SQL
 resource sqlServer 'Microsoft.Sql/servers@2022-11-01-preview' = {
   name: sqlServerName
   location: location
   properties: {
     administratorLogin: adminUser
     administratorLoginPassword: adminPassword
+    version: '12.0'
+    minimalTlsVersion: '1.2'
+    publicNetworkAccess: 'Enabled'
   }
 }
 
 // Règle de pare-feu pour autoriser les services Azure
-resource firewallRule 'Microsoft.Sql/servers/firewallRules@2022-11-01-preview' = {
+resource firewallRuleAzure 'Microsoft.Sql/servers/firewallRules@2022-11-01-preview' = {
   name: 'AllowAzureServices'
   parent: sqlServer
   properties: {
@@ -27,8 +30,18 @@ resource firewallRule 'Microsoft.Sql/servers/firewallRules@2022-11-01-preview' =
   }
 }
 
+// Règle de pare-feu pour autoriser tous les accès (à restreindre en production)
+resource firewallRuleAll 'Microsoft.Sql/servers/firewallRules@2022-11-01-preview' = {
+  name: 'AllowAll'
+  parent: sqlServer
+  properties: {
+    startIpAddress: '0.0.0.0'
+    endIpAddress: '255.255.255.255'
+  }
+}
 
-// Base de données
+
+// Base de données Azure SQL
 resource sqlDatabase 'Microsoft.Sql/servers/databases@2022-11-01-preview' = {
   name: databaseName
   parent: sqlServer
@@ -36,6 +49,15 @@ resource sqlDatabase 'Microsoft.Sql/servers/databases@2022-11-01-preview' = {
   sku: {
     name: 'Basic'
     tier: 'Basic'
+    capacity: 5
+  }
+  properties: {
+    collation: 'SQL_Latin1_General_CP1_CI_AS'
+    maxSizeBytes: 2147483648 // 2 GB
+    catalogCollation: 'SQL_Latin1_General_CP1_CI_AS'
+    zoneRedundant: false
+    readScale: 'Disabled'
+    requestedBackupStorageRedundancy: 'Local'
   }
 }
 
