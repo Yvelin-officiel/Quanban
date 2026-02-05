@@ -84,7 +84,7 @@ jobs:
             postgresAdminUser=testadmin
             postgresAdminPassword=${{ secrets.POSTGRES_ADMIN_PASSWORD || 'TestPassword123!' }}
             databaseName=quanban
-            location=westeurope
+            location=norwaywest
           deploymentMode: Validate
         continue-on-error: true
 
