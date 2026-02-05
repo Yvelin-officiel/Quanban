@@ -4,6 +4,18 @@ export const initDatabase = async () => {
   try {
     const pool = getPool();
 
+    // Create Users table
+    await pool.request().query(`
+      IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Users' AND xtype='U')
+      CREATE TABLE Users (
+        id INT PRIMARY KEY IDENTITY(1,1),
+        username NVARCHAR(255) NOT NULL UNIQUE,
+        email NVARCHAR(255) NOT NULL UNIQUE,
+        created_at DATETIME2 DEFAULT GETDATE(),
+        updated_at DATETIME2 DEFAULT GETDATE()
+      )
+    `);
+
     // Create Boards table
     await pool.request().query(`
       IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Boards' AND xtype='U')
