@@ -32,6 +32,7 @@ resource firewallRule 'Microsoft.Sql/servers/firewallRules@2022-11-01-preview' =
 resource sqlDatabase 'Microsoft.Sql/servers/databases@2022-11-01-preview' = {
   name: databaseName
   parent: sqlServer
+  location: location
   sku: {
     name: 'Basic'
     tier: 'Basic'

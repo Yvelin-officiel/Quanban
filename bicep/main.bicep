@@ -11,7 +11,7 @@ module postgres './postgres.bicep' = {
   name: 'postgresModule'
   params: {
     location: location
-    serverName: postgresServerName
+    sqlServerName: postgresServerName
     adminUser: postgresAdminUser
     adminPassword: postgresAdminPassword
     databaseName: databaseName
