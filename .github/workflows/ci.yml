@@ -70,7 +70,7 @@ jobs:
       - name: Validate Bicep syntax
         run: |
           az bicep build --file ./bicep/main.bicep
-          az bicep build --file ./bicep/postgres.bicep
+          az bicep build --file ./bicep/sql-db.bicep
 
       - name: Run What-If Analysis
         if: success()
