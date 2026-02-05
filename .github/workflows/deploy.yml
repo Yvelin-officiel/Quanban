@@ -106,7 +106,11 @@ jobs:
           scope: resourcegroup
           resourceGroupName: ${{ env.AZURE_RESOURCE_GROUP }}
           template: ./bicep/main.bicep
-          parameters: ./bicep/main.parameters.json
+          parameters: >
+            sqlAdminUser=${{ env.SQL_ADMIN_USER }}
+            sqlAdminPassword=${{ secrets.POSTGRES_ADMIN_PASSWORD }}
+            databaseName=${{ env.DATABASE_NAME }}
+            location=${{ env.AZURE_REGION }}
           deploymentName: quanban-deployment-${{ github.run_number }}
 
       - name: Display deployment outputs
