@@ -1,62 +1,46 @@
 // Paramètres
 param location string
-param serverName string
+param sqlServerName string
 param adminUser string
 @secure()
 param adminPassword string
-param databaseName string = 'quanban'
-param skuName string = 'Standard_B1ms'
-param skuTier string = 'Burstable'
-param storageSizeGB int = 32
-param postgresVersion string = '16'
+param databaseName string = 'quanban-db'
+
 
 // Serveur PostgreSQL Flexible
-resource postgresServer 'Microsoft.DBforPostgreSQL/flexibleServers@2023-03-01-preview' = {
-  name: serverName
+resource sqlServer 'Microsoft.Sql/servers@2022-11-01-preview' = {
+  name: sqlServerName
   location: location
-  sku: {
-    name: skuName
-    tier: skuTier
-  }
   properties: {
     administratorLogin: adminUser
     administratorLoginPassword: adminPassword
-    version: postgresVersion
-    storage: {
-      storageSizeGB: storageSizeGB
-    }
-    backup: {
-      backupRetentionDays: 7
-      geoRedundantBackup: 'Disabled'
-    }
-    highAvailability: {
-      mode: 'Disabled'
-    }
   }
 }
 
 // Règle de pare-feu pour autoriser les services Azure
-resource firewallRule 'Microsoft.DBforPostgreSQL/flexibleServers/firewallRules@2023-03-01-preview' = {
-  name: 'AllowAllAzureServicesAndResourcesWithinAzureIps'
-  parent: postgresServer
+resource firewallRule 'Microsoft.Sql/servers/firewallRules@2022-11-01-preview' = {
+  name: 'AllowAzureServices'
+  parent: sqlServer
   properties: {
     startIpAddress: '0.0.0.0'
     endIpAddress: '0.0.0.0'
   }
 }
 
+
 // Base de données
-resource database 'Microsoft.DBforPostgreSQL/flexibleServers/databases@2023-03-01-preview' = {
+resource sqlDatabase 'Microsoft.Sql/servers/databases@2022-11-01-preview' = {
   name: databaseName
-  parent: postgresServer
-  properties: {
-    charset: 'UTF8'
-    collation: 'en_US.utf8'
+  parent: sqlServer
+  sku: {
+    name: 'Basic'
+    tier: 'Basic'
   }
 }
 
 // Outputs
-output serverFqdn string = postgresServer.properties.fullyQualifiedDomainName
-output databaseName string = database.name
-output serverId string = postgresServer.id
+output sqlServerName string = sqlServer.name
+output databaseName string = sqlDatabase.name
+output serverFqdn string = sqlServer.properties.fullyQualifiedDomainName
+
 
