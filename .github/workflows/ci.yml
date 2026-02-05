@@ -1,0 +1,89 @@
+name: CI - Pull Request Validation
+
+on:
+  pull_request:
+    branches:
+      - main
+      - develop
+
+
+jobs:
+  # Validation du Backend
+  validate-backend:
+    name: Validate Backend
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: back/package-lock.json
+
+      - name: Install dependencies
+        working-directory: ./back
+        run: npm ci
+
+  # Validation du Frontend
+  validate-frontend:
+    name: Validate Frontend
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: front/package-lock.json
+
+      - name: Install dependencies
+        working-directory: ./front
+        run: npm ci
+
+      - name: Build frontend
+        working-directory: ./front
+        run: npm run build
+
+  # Validation des fichiers Bicep
+  validate-bicep:
+    name: Validate Bicep Templates
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+        continue-on-error: true
+
+      - name: Validate Bicep syntax
+        run: |
+          az bicep build --file ./bicep/main.bicep
+          az bicep build --file ./bicep/sql-db.bicep
+
+      - name: Run What-If Analysis
+        if: success()
+        uses: azure/arm-deploy@v2
+        with:
+          scope: resourcegroup
+          resourceGroupName: rg-quanban-test
+          template: ./bicep/main.bicep
+          parameters: >
+            sqlServerName=quanban-test-server
+            sqlAdminUser=testadmin
+            sqlAdminPassword=${{ secrets.POSTGRES_ADMIN_PASSWORD }}
+            databaseName=quanban-db
+            location=norwaywest
+          deploymentMode: Validate
+        continue-on-error: true
