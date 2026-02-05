@@ -47,7 +47,6 @@ const buildConfig = async () => {
   };
 };
 
-let pool = null;
 let useMockData = false;
 
 export const connectDB = async () => {
