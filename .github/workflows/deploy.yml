@@ -13,9 +13,8 @@ on:
 env:
   AZURE_RESOURCE_GROUP: rg-quanban
   AZURE_REGION: norwayeast
-  SQL_SERVER_NAME: quanban-server-${{ github.run_number }}
   SQL_ADMIN_USER: quanbanadmin
-  DATABASE_NAME: quanban
+  DATABASE_NAME: quanban-db
 
 jobs:
   # Job 1: Build Backend
@@ -108,7 +107,6 @@ jobs:
           resourceGroupName: ${{ env.AZURE_RESOURCE_GROUP }}
           template: ./bicep/main.bicep
           parameters: >
-            sqlServerName=${{ env.SQL_SERVER_NAME }}
             sqlAdminUser=${{ env.SQL_ADMIN_USER }}
             sqlAdminPassword=${{ secrets.POSTGRES_ADMIN_PASSWORD }}
             databaseName=${{ env.DATABASE_NAME }}

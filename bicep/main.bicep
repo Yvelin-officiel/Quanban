@@ -1,6 +1,6 @@
 // Paramètres principaux
 param location string = 'norwayeast'
-param sqlServerName string = 'quanban-server'
+param sqlServerName string = 'quanban-server-${uniqueString(resourceGroup().id)}'
 param sqlAdminUser string = 'quanbanadmin'
 @secure()
 param sqlAdminPassword string
