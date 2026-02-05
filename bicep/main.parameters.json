@@ -20,7 +20,7 @@
       }
     },
     "databaseName": {
-      "value": "quanban"
+      "value": "quanban-db"
     }
   }
 }

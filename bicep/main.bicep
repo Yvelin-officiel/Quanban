@@ -4,7 +4,7 @@ param sqlServerName string = 'quanban-server'
 param sqlAdminUser string = 'quanbanadmin'
 @secure()
 param sqlAdminPassword string
-param databaseName string = 'quanban'
+param databaseName string = 'quanban-db'
 
 // Module Azure SQL Database
 module sqlDatabase './sql-db.bicep' = {

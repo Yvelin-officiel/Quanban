@@ -6,9 +6,8 @@ param adminUser string
 param adminPassword string
 param databaseName string = 'quanban-db'
 
-
 // Serveur Azure SQL
-resource sqlServer 'Microsoft.Sql/servers@2022-11-01-preview' = {
+resource sqlServer 'Microsoft.Sql/servers@2023-05-01-preview' = {
   name: sqlServerName
   location: location
   properties: {
@@ -21,7 +20,7 @@ resource sqlServer 'Microsoft.Sql/servers@2022-11-01-preview' = {
 }
 
 // Règle de pare-feu pour autoriser les services Azure
-resource firewallRuleAzure 'Microsoft.Sql/servers/firewallRules@2022-11-01-preview' = {
+resource firewallRuleAzure 'Microsoft.Sql/servers/firewallRules@2023-05-01-preview' = {
   name: 'AllowAzureServices'
   parent: sqlServer
   properties: {
@@ -31,7 +30,7 @@ resource firewallRuleAzure 'Microsoft.Sql/servers/firewallRules@2022-11-01-previ
 }
 
 // Règle de pare-feu pour autoriser tous les accès (à restreindre en production)
-resource firewallRuleAll 'Microsoft.Sql/servers/firewallRules@2022-11-01-preview' = {
+resource firewallRuleAll 'Microsoft.Sql/servers/firewallRules@2023-05-01-preview' = {
   name: 'AllowAll'
   parent: sqlServer
   properties: {
@@ -42,7 +41,7 @@ resource firewallRuleAll 'Microsoft.Sql/servers/firewallRules@2022-11-01-preview
 
 
 // Base de données Azure SQL
-resource sqlDatabase 'Microsoft.Sql/servers/databases@2022-11-01-preview' = {
+resource sqlDatabase 'Microsoft.Sql/servers/databases@2023-05-01-preview' = {
   name: databaseName
   parent: sqlServer
   location: location

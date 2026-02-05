@@ -80,11 +80,10 @@ jobs:
           resourceGroupName: rg-quanban-test
           template: ./bicep/main.bicep
           parameters: >
-            postgresServerName=quanban-test-server
-            postgresAdminUser=testadmin
-            postgresAdminPassword=${{ secrets.POSTGRES_ADMIN_PASSWORD || 'TestPassword123!' }}
-            databaseName=quanban
+            sqlServerName=quanban-test-server
+            sqlAdminUser=testadmin
+            sqlAdminPassword=${{ secrets.POSTGRES_ADMIN_PASSWORD }}
+            databaseName=quanban-db
             location=norwaywest
           deploymentMode: Validate
         continue-on-error: true
-
