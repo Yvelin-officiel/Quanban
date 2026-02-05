@@ -107,11 +107,7 @@ jobs:
           scope: resourcegroup
           resourceGroupName: ${{ env.AZURE_RESOURCE_GROUP }}
           template: ./bicep/main.bicep
-          parameters: >
-            sqlAdminUser=${{ env.SQL_ADMIN_USER }}
-            sqlAdminPassword=${{ secrets.POSTGRES_ADMIN_PASSWORD }}
-            databaseName=${{ env.DATABASE_NAME }}
-            location=${{ env.AZURE_REGION }}
+          parameters: ./bicep/main.parameters.json
           deploymentName: quanban-deployment-${{ github.run_number }}
 
       - name: Display deployment outputs
@@ -137,7 +133,7 @@ jobs:
           name: backend
           path: ./back
 
-      # Publie le contenu du dossier ./back (doit contenir package.json à la racine)
+      # Publie le contenu du dossier
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
