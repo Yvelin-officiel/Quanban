@@ -20,26 +20,32 @@ const config = {
 };
 
 let pool = null;
+let useMockData = false;
 
 export const connectDB = async () => {
   try {
-    if (!pool) {
+    if (!pool && !useMockData) {
       pool = await sql.connect(config);
-      console.log('Connected to Azure SQL Database');
+      console.log('✅ Connected to Azure SQL Database');
+      useMockData = false;
     }
     return pool;
   } catch (err) {
-    console.error('Database connection error:', err);
-    throw err;
+    console.warn('⚠️  Database connection failed, using MOCK DATA');
+    console.error('Error details:', err.message);
+    useMockData = true;
+    pool = null;
   }
 };
 
 export const getPool = () => {
-  if (!pool) {
+  if (!pool && !useMockData) {
     throw new Error('Database not connected. Call connectDB first.');
   }
   return pool;
 };
+
+export const isMockMode = () => useMockData;
 
 export const closeDB = async () => {
   if (pool) {
@@ -49,4 +55,4 @@ export const closeDB = async () => {
   }
 };
 
-export default { connectDB, getPool, closeDB };
+export default { connectDB, getPool, closeDB, isMockMode };

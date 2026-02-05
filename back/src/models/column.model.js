@@ -1,8 +1,12 @@
-import { getPool } from '../config/database.js';
+import { getPool, isMockMode } from '../config/database.js';
+import { mockData } from '../data/mockData.js';
 import sql from 'mssql';
 
 export const Column = {
   async findByBoardId(boardId) {
+    if (isMockMode()) {
+      return mockData.columns.getByBoardId(boardId);
+    }
     const pool = getPool();
     const result = await pool.request()
       .input('boardId', sql.Int, boardId)
@@ -11,6 +15,9 @@ export const Column = {
   },
 
   async findById(id) {
+    if (isMockMode()) {
+      return mockData.columns.getById(id);
+    }
     const pool = getPool();
     const result = await pool.request()
       .input('id', sql.Int, id)
@@ -19,6 +26,9 @@ export const Column = {
   },
 
   async create(data) {
+    if (isMockMode()) {
+      return mockData.columns.create(data);
+    }
     const pool = getPool();
     const result = await pool.request()
       .input('boardId', sql.Int, data.board_id)
@@ -33,6 +43,9 @@ export const Column = {
   },
 
   async update(id, data) {
+    if (isMockMode()) {
+      return mockData.columns.update(id, data);
+    }
     const pool = getPool();
     const result = await pool.request()
       .input('id', sql.Int, id)
@@ -50,6 +63,9 @@ export const Column = {
   },
 
   async delete(id) {
+    if (isMockMode()) {
+      return mockData.columns.delete(id);
+    }
     const pool = getPool();
     await pool.request()
       .input('id', sql.Int, id)

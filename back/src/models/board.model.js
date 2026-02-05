@@ -1,14 +1,21 @@
-import { getPool } from '../config/database.js';
+import { getPool, isMockMode } from '../config/database.js';
+import { mockData } from '../data/mockData.js';
 import sql from 'mssql';
 
 export const Board = {
   async findAll() {
+    if (isMockMode()) {
+      return mockData.boards.getAll();
+    }
     const pool = getPool();
     const result = await pool.request().query('SELECT * FROM Boards ORDER BY created_at DESC');
     return result.recordset;
   },
 
   async findById(id) {
+    if (isMockMode()) {
+      return mockData.boards.getById(id);
+    }
     const pool = getPool();
     const result = await pool.request()
       .input('id', sql.Int, id)
@@ -17,6 +24,9 @@ export const Board = {
   },
 
   async create(data) {
+    if (isMockMode()) {
+      return mockData.boards.create(data);
+    }
     const pool = getPool();
     const result = await pool.request()
       .input('title', sql.NVarChar, data.title)
@@ -30,6 +40,9 @@ export const Board = {
   },
 
   async update(id, data) {
+    if (isMockMode()) {
+      return mockData.boards.update(id, data);
+    }
     const pool = getPool();
     const result = await pool.request()
       .input('id', sql.Int, id)
@@ -47,6 +60,9 @@ export const Board = {
   },
 
   async delete(id) {
+    if (isMockMode()) {
+      return mockData.boards.delete(id);
+    }
     const pool = getPool();
     await pool.request()
       .input('id', sql.Int, id)
