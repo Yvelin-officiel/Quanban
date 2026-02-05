@@ -29,11 +29,12 @@ resource webApp 'Microsoft.Web/sites@2022-09-01' = {
 }
 
 resource appSettings 'Microsoft.Web/sites/config@2022-09-01' = {
-  name: '${webApp.name}/appsettings'
+  name: 'appsettings'
+  parent: webApp
   properties: {
-    'ConnectionStrings__DefaultConnection': sqlConnectionString
-    'WEBSITES_PORT': '3000'
-    'PORT': '3000'
+    ConnectionStrings__DefaultConnection: sqlConnectionString
+    WEBSITES_PORT: '3000'
+    PORT: '3000'
   }
 }
 
