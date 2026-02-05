@@ -1,10 +1,12 @@
-// Paramètres principaux
 param location string = 'norwayeast'
 param sqlServerName string = 'quanban-server-${uniqueString(resourceGroup().id)}'
 param sqlAdminUser string = 'quanbanadmin'
 @secure()
 param sqlAdminPassword string
 param databaseName string = 'quanban-db'
+// Paramètres backend
+param backendAppName string = 'quanban-backend-${uniqueString(resourceGroup().id)}'
+param backendPlanName string = 'quanban-plan'
 
 // Module Azure SQL Database
 module sqlDatabase './sql-db.bicep' = {
@@ -18,7 +20,22 @@ module sqlDatabase './sql-db.bicep' = {
   }
 }
 
+// Construction de la connection string SQL
+var sqlConnectionString = 'Server=tcp:${sqlDatabase.outputs.serverFqdn},1433;Database=${databaseName};User ID=${sqlAdminUser};Password=${sqlAdminPassword};Encrypt=True;'
+
+// Module backend App Service
+module backend './backend.bicep' = {
+  name: 'backendModule'
+  params: {
+    location: location
+    appServiceName: backendAppName
+    appServicePlanName: backendPlanName
+    sqlConnectionString: sqlConnectionString
+  }
+}
+
 // Outputs
 output sqlServerFqdn string = sqlDatabase.outputs.serverFqdn
-output sqlDatabaseName string = sqlDatabase.outputs.databaseName
-
+output sqlDatabaseName string = databaseName
+output backendUrl string = backend.outputs.appUrl
+output backendAppName string = backendAppName
