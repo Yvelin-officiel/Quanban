@@ -12,7 +12,7 @@ on:
 
 env:
   AZURE_RESOURCE_GROUP: rg-quanban
-  AZURE_REGION: westeurope
+  AZURE_REGION: norwayeast
   POSTGRES_SERVER_NAME: quanban-server-${{ github.run_number }}
   POSTGRES_ADMIN_USER: quanbanadmin
   DATABASE_NAME: quanban

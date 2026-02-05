@@ -1,5 +1,5 @@
 // Paramètres principaux
-param location string = 'norwaywest'
+param location string = 'norwayeast'
 param postgresServerName string = 'quanban-server'
 param postgresAdminUser string = 'quanbanadmin'
 @secure()
