@@ -38,17 +38,14 @@ resource appSettings 'Microsoft.Web/sites/config@2022-09-01' = {
   name: 'appsettings'
   parent: webApp
   properties: {
-    // Backend API URL
     VITE_API_URL: backendApiUrl
-    // Node.js settings
     WEBSITE_NODE_DEFAULT_VERSION: '~20'
     SCM_DO_BUILD_DURING_DEPLOYMENT: 'true'
-    // Static site configuration
     WEBSITES_PORT: '8080'
   }
 }
 
-// CORS configuration (if needed)
+// CORS configuration
 resource webAppCors 'Microsoft.Web/sites/config@2022-09-01' = {
   name: 'web'
   parent: webApp
