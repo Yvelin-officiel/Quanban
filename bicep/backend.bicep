@@ -72,11 +72,10 @@ resource appSettings 'Microsoft.Web/sites/config@2022-09-01' = {
   name: 'appsettings'
   parent: webApp
   dependsOn: [
-    keyVaultRoleAssignment
+    keyVaultAccessPolicy
   ]
   properties: {
     DB_USER: sqlAdminUser
-    DB_PASSWORD: sqlAdminPassword
     DB_SERVER: sqlServerFqdn
     DB_NAME: databaseName
     // Key Vault configuration
