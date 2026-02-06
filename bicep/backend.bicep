@@ -1,7 +1,6 @@
 param location string
 param appServiceName string
 param appServicePlanName string
-param sqlConnectionString string
 
 param sqlAdminUser string
 @secure()
