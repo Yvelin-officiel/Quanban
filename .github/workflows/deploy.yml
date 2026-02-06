@@ -68,6 +68,12 @@ jobs:
         working-directory: ./front
         run: npm run build
 
+      - name: Prepare deployment package
+        working-directory: ./front
+        run: |
+          cp package.json dist/
+          cp package-lock.json dist/
+
       - name: Upload frontend artifact
         uses: actions/upload-artifact@v4
         with:
@@ -159,12 +165,9 @@ jobs:
           name: frontend
           path: ./front-dist
 
-      - name: Setup simple server
-        run: |
-          cd front-dist
-          npm init -y
-          npm install serve --save
-          echo '{"scripts":{"start":"serve -s . -l 8080"}}' > package.json
+      - name: Install production dependencies
+        working-directory: ./front-dist
+        run: npm ci --omit=dev
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3

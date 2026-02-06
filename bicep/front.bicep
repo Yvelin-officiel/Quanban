@@ -41,6 +41,7 @@ resource appSettings 'Microsoft.Web/sites/config@2022-09-01' = {
     VITE_API_URL: backendApiUrl
     WEBSITE_NODE_DEFAULT_VERSION: '~20'
     SCM_DO_BUILD_DURING_DEPLOYMENT: 'true'
+    ENABLE_ORYX_BUILD: 'true'
     WEBSITES_PORT: '8080'
   }
 }
