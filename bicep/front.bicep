@@ -26,7 +26,7 @@ resource webApp 'Microsoft.Web/sites@2022-09-01' = {
     serverFarmId: appServicePlan.id
     siteConfig: {
       linuxFxVersion: 'NODE|20-lts'
-      appCommandLine: 'pm2 serve /home/site/wwwroot/dist --no-daemon --spa'
+      appCommandLine: 'npm start'
       alwaysOn: true
     }
     httpsOnly: true

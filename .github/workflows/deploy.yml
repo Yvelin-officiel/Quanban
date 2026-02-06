@@ -84,6 +84,7 @@ jobs:
       sql-fqdn: ${{ steps.deploy.outputs.sqlServerFqdn }}
       database-name: ${{ steps.deploy.outputs.sqlDatabaseName }}
       backend-app-name: ${{ steps.deploy.outputs.backendAppName }}
+      frontend-app-name: ${{ steps.deploy.outputs.frontendAppName }}
 
     steps:
       - name: Checkout code
@@ -139,3 +140,35 @@ jobs:
         with:
           app-name: ${{ needs.deploy-infrastructure.outputs.backend-app-name }}
           package: ./back
+
+  # Job 5: Deploy Frontend (App Service)
+  deploy-frontend:
+    name: Deploy Frontend (App Service)
+    runs-on: ubuntu-latest
+    needs: [deploy-infrastructure, build-frontend]
+
+    steps:
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Download frontend artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend
+          path: ./front-dist
+
+      - name: Setup simple server
+        run: |
+          cd front-dist
+          npm init -y
+          npm install serve --save
+          echo '{"scripts":{"start":"serve -s . -l 8080"}}' > package.json
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ needs.deploy-infrastructure.outputs.frontend-app-name }}
+          package: ./front-dist
+
