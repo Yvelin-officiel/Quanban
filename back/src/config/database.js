@@ -3,23 +3,24 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+let pool = null;
+
 const config = {
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  server: process.env.DB_SERVER,
-  database: process.env.DB_NAME,
-  options: {
-    encrypt: true, // Required for Azure SQL
-    trustServerCertificate: false
-  },
-  pool: {
-    max: 10,
-    min: 0,
-    idleTimeoutMillis: 30000
-  }
+user: process.env.DB_USER || 'quanbanadmin',
+password: process.env.DB_PASSWORD,
+server: process.env.DB_SERVER || 'quanban-server-b3zx2ffjkgkwo.database.windows.net',
+database: process.env.DB_NAME || 'quanban-db',
+options: {
+  encrypt: true, // Required for Azure SQL
+  trustServerCertificate: false
+},
+pool: {
+  max: 10,
+  min: 0,
+  idleTimeoutMillis: 30000
+}
 };
 
-let pool = null;
 let useMockData = false;
 
 export const connectDB = async () => {
