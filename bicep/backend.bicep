@@ -72,7 +72,7 @@ resource appSettings 'Microsoft.Web/sites/config@2022-09-01' = {
   name: 'appsettings'
   parent: webApp
   dependsOn: [
-    keyVaultAccessPolicy
+    keyVaultRoleAssignment
   ]
   properties: {
     DB_USER: sqlAdminUser

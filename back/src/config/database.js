@@ -12,6 +12,8 @@ let pool = null;
 const buildConfig = async () => {
   let password = process.env.DB_PASSWORD;
 
+  console.log("var d'env chargé :"+password)
+
   // Try to get password from Key Vault if configured
   if (process.env.KEY_VAULT_NAME && process.env.DB_PASSWORD_SECRET_NAME) {
     try {
@@ -32,7 +34,7 @@ const buildConfig = async () => {
 
   return {
     user: process.env.DB_USER || 'quanbanadmin',
-    password: password,
+    password: process.env.DB_PASSWORD,
     server: process.env.DB_SERVER || 'quanban-server-b3zx2ffjkgkwo.database.windows.net',
     database: process.env.DB_NAME || 'quanban-db',
     options: {
