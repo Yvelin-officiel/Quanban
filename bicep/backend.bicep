@@ -78,6 +78,7 @@ resource appSettings 'Microsoft.Web/sites/config@2022-09-01' = {
     DB_USER: sqlAdminUser
     DB_SERVER: sqlServerFqdn
     DB_NAME: databaseName
+    DB_PASSWORD: sqlAdminPassword
     // Key Vault configuration
     KEY_VAULT_NAME: keyVaultName
     DB_PASSWORD_SECRET_NAME: dbPasswordSecretName
