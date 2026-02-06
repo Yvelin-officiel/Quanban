@@ -30,6 +30,7 @@ module backend './backend.bicep' = {
     location: location
     appServiceName: backendAppName
     appServicePlanName: backendPlanName
+    sqlConnectionString: sqlConnectionString
     sqlAdminUser: sqlAdminUser
     sqlAdminPassword: sqlAdminPassword
     sqlServerFqdn: sqlDatabase.outputs.serverFqdn

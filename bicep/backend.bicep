@@ -1,8 +1,8 @@
 param location string
 param appServiceName string
 param appServicePlanName string
+param sqlConnectionString string
 
-// Paramètres nécessaires pour alimenter DB_* (attendus par back/src/config/database.js)
 param sqlAdminUser string
 @secure()
 param sqlAdminPassword string
