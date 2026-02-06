@@ -8,6 +8,10 @@ param databaseName string = 'quanban-db'
 param backendAppName string = 'quanban-backend-${uniqueString(resourceGroup().id)}'
 param backendPlanName string = 'quanban-plan'
 
+// Paramètres frontend
+param frontendAppName string = 'quanban-frontend-${uniqueString(resourceGroup().id)}'
+param frontendPlanName string = 'quanban-frontend-plan'
+
 // Module Azure SQL Database
 module sqlDatabase './sql-db.bicep' = {
   name: 'sqlDatabaseModule'
@@ -38,8 +42,21 @@ module backend './backend.bicep' = {
   }
 }
 
+// Module frontend App Service
+module frontend './front.bicep' = {
+  name: 'frontendModule'
+  params: {
+    location: location
+    appServiceName: frontendAppName
+    appServicePlanName: frontendPlanName
+    backendApiUrl: backend.outputs.appUrl
+  }
+}
+
 // Outputs
 output sqlServerFqdn string = sqlDatabase.outputs.serverFqdn
 output sqlDatabaseName string = databaseName
 output backendUrl string = backend.outputs.appUrl
 output backendAppName string = backendAppName
+output frontendUrl string = frontend.outputs.appUrl
+output frontendAppName string = frontendAppName
