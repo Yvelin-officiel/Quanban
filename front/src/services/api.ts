@@ -1,14 +1,7 @@
 import axios, { AxiosError } from 'axios';
+import { getApiUrl } from '../config/runtimeEnv';
 
-declare global {
-  interface Window {
-    __ENV__?: {
-      VITE_API_URL?: string;
-    };
-  }
-}
-
-const API_URL = window.__ENV__?.VITE_API_URL || 'http://localhost:3000/api';
+const API_URL = getApiUrl();
 
 // Configure axios to handle errors
 axios.interceptors.response.use(
