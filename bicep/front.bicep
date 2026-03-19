@@ -26,7 +26,7 @@ resource webApp 'Microsoft.Web/sites@2022-09-01' = {
     serverFarmId: appServicePlan.id
     siteConfig: {
       linuxFxVersion: 'NODE|20-lts'
-      appCommandLine: 'sh -c "export VITE_API_URL=${VITE_API_URL} && npm run build && npm start"'
+      appCommandLine: 'bash build.sh'
       alwaysOn: true
     }
     httpsOnly: true
