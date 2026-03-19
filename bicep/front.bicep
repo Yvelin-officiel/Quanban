@@ -61,3 +61,4 @@ resource webAppCors 'Microsoft.Web/sites/config@2022-09-01' = {
 
 output appUrl string = 'https://${webApp.properties.defaultHostName}'
 output appServicePlanId string = appServicePlan.id
+
