@@ -73,6 +73,8 @@ jobs:
         run: |
           cp package.json dist/
           cp package-lock.json dist/
+          cd dist
+          npm ci --production
 
       - name: Upload frontend artifact
         uses: actions/upload-artifact@v4
@@ -164,10 +166,6 @@ jobs:
         with:
           name: frontend
           path: ./front-dist
-
-      - name: Install production dependencies
-        working-directory: ./front-dist
-        run: npm ci --omit=dev
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
