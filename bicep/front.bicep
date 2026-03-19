@@ -26,7 +26,7 @@ resource webApp 'Microsoft.Web/sites@2022-09-01' = {
     serverFarmId: appServicePlan.id
     siteConfig: {
       linuxFxVersion: 'NODE|20-lts'
-      appCommandLine: 'npm start'
+      appCommandLine: 'npm run build && npm start'
       alwaysOn: true
     }
     httpsOnly: true
@@ -40,7 +40,7 @@ resource appSettings 'Microsoft.Web/sites/config@2022-09-01' = {
   properties: {
     VITE_API_URL: backendApiUrl
     WEBSITE_NODE_DEFAULT_VERSION: '~20'
-    SCM_DO_BUILD_DURING_DEPLOYMENT: 'false'
+    SCM_DO_BUILD_DURING_DEPLOYMENT: 'true'
     WEBSITES_PORT: '8080'
   }
 }
