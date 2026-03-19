@@ -1,14 +1,6 @@
 import axios, { AxiosError } from 'axios';
 
-declare global {
-  interface Window {
-    __ENV__?: {
-      VITE_API_URL?: string;
-    };
-  }
-}
-
-const API_URL = window.__ENV__?.VITE_API_URL || 'http://localhost:3000/api';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
 // Configure axios to handle errors
 axios.interceptors.response.use(
