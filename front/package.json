@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "vite",
-    "prebuild": "node create-env.js",
     "build": "vite build",
     "preview": "vite preview",
     "start": "http-server dist -p 8080 -c-1"
