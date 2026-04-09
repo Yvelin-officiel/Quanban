@@ -91,12 +91,15 @@ resource appSettings 'Microsoft.Web/sites/config@2022-09-01' = {
 resource autoscaleSetting 'Microsoft.Insights/autoscalesettings@2022-10-01' = {
   name: '${appServicePlanName}-autoscale'
   location: location
+  dependsOn: [
+    appServicePlan
+  ]
   properties: {
     enabled: true
     targetResourceUri: appServicePlan.id
     profiles: [
       {
-        name: 'CPU-based scaling'
+        name: 'Auto scale based on CPU'
         capacity: {
           minimum: '2'
           maximum: '4'
@@ -104,7 +107,6 @@ resource autoscaleSetting 'Microsoft.Insights/autoscalesettings@2022-10-01' = {
         }
         rules: [
           {
-            // Scale-out rule: increase when CPU > 75%
             metricTrigger: {
               metricName: 'CpuPercentage'
               metricResourceUri: appServicePlan.id
@@ -123,7 +125,6 @@ resource autoscaleSetting 'Microsoft.Insights/autoscalesettings@2022-10-01' = {
             }
           }
           {
-            // Scale-in rule: decrease when CPU < 25%
             metricTrigger: {
               metricName: 'CpuPercentage'
               metricResourceUri: appServicePlan.id
