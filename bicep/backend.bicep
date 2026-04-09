@@ -91,9 +91,6 @@ resource appSettings 'Microsoft.Web/sites/config@2022-09-01' = {
 resource autoscaleSetting 'Microsoft.Insights/autoscalesettings@2022-10-01' = {
   name: '${appServicePlanName}-autoscale'
   location: location
-  dependsOn: [
-    appServicePlan
-  ]
   properties: {
     enabled: true
     targetResourceUri: appServicePlan.id
