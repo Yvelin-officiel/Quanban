@@ -26,7 +26,7 @@ resource webApp 'Microsoft.Web/sites@2022-09-01' = {
     serverFarmId: appServicePlan.id
     siteConfig: {
       linuxFxVersion: 'NODE|20-lts'
-      appCommandLine: 'echo "VITE_API_URL=${backendApiUrl}/api" > .env && npm install && npm run build && npm start'
+      appCommandLine: 'echo "VITE_API_URL=${backendApiUrl}/api" > .env && npm start'
       alwaysOn: true
     }
     httpsOnly: true
@@ -42,6 +42,8 @@ resource appSettings 'Microsoft.Web/sites/config@2022-09-01' = {
     WEBSITE_NODE_DEFAULT_VERSION: '~20'
     SCM_DO_BUILD_DURING_DEPLOYMENT: 'true'
     WEBSITES_PORT: '8080'
+    ENABLE_ORYX_BUILD: 'true'
+    SCM_BUILD_ARGS: '--prod'
   }
 }
 
