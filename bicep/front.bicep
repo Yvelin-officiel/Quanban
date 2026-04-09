@@ -38,7 +38,7 @@ resource appSettings 'Microsoft.Web/sites/config@2022-09-01' = {
   name: 'appsettings'
   parent: webApp
   properties: {
-    VITE_API_URL: backendApiUrl
+    VITE_API_URL: '${backendApiUrl}/api'
     WEBSITE_NODE_DEFAULT_VERSION: '~20'
     SCM_DO_BUILD_DURING_DEPLOYMENT: 'true'
     WEBSITES_PORT: '8080'
