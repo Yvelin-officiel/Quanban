@@ -87,4 +87,64 @@ resource appSettings 'Microsoft.Web/sites/config@2022-09-01' = {
   }
 }
 
+// Autoscale Configuration for Backend
+resource autoscaleSetting 'Microsoft.Insights/autoscalesettings@2022-10-01' = {
+  name: '${appServicePlanName}-autoscale'
+  location: location
+  properties: {
+    enabled: true
+    targetResourceUri: appServicePlan.id
+    profiles: [
+      {
+        name: 'CPU-based scaling'
+        capacity: {
+          minimum: '2'
+          maximum: '4'
+          default: '2'
+        }
+        rules: [
+          {
+            // Scale-out rule: increase when CPU > 75%
+            metricTrigger: {
+              metricName: 'CpuPercentage'
+              metricResourceUri: appServicePlan.id
+              timeGrain: 'PT1M'
+              statistic: 'Average'
+              timeWindow: 'PT5M'
+              timeAggregation: 'Average'
+              operator: 'GreaterThan'
+              threshold: 75
+            }
+            scaleAction: {
+              direction: 'Increase'
+              type: 'ChangeCount'
+              value: '1'
+              cooldown: 'PT5M'
+            }
+          }
+          {
+            // Scale-in rule: decrease when CPU < 25%
+            metricTrigger: {
+              metricName: 'CpuPercentage'
+              metricResourceUri: appServicePlan.id
+              timeGrain: 'PT1M'
+              statistic: 'Average'
+              timeWindow: 'PT10M'
+              timeAggregation: 'Average'
+              operator: 'LessThan'
+              threshold: 25
+            }
+            scaleAction: {
+              direction: 'Decrease'
+              type: 'ChangeCount'
+              value: '1'
+              cooldown: 'PT5M'
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
+
 output appUrl string = 'https://${webApp.properties.defaultHostName}'
