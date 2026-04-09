@@ -26,7 +26,7 @@ resource webApp 'Microsoft.Web/sites@2022-09-01' = {
     serverFarmId: appServicePlan.id
     siteConfig: {
       linuxFxVersion: 'NODE|20-lts'
-      appCommandLine: 'echo "VITE_API_URL=${backendApiUrl}/api" > .env && npm run build && npm start'
+      appCommandLine: 'echo "VITE_API_URL=${backendApiUrl}/api" > .env && npm install && npm run build && npm start'
       alwaysOn: true
     }
     httpsOnly: true
